@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Firebase Emulator",
+			"detail": "Firebaseエミュレーターを起動します",
+			"type": "shell",
+			"command": "firebase emulators:start",
+			"group":{
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}

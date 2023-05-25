@@ -5,23 +5,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Koaku.ma - 短縮URL</title>
 
-        <!-- Simple CSS -->
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Source+Code+Pro">
+        <link rel="stylesheet" href="css/main.css">
 
         <!-- NOTE - update the version number as needed -->
         <script defer src="/__/firebase/9.22.0/firebase-app-compat.js"></script>
         <script defer src="/__/firebase/9.22.0/firebase-database-compat.js"></script>
+        <script defer src="/__/firebase/9.22.0/firebase-app-check-compat.js"></script>
         <!-- NOTE - initialize the SDK after all desired features are loaded, -->
         <!-- set useEmulator to false to avoid connecting the SDK to running emulators. -->
         <script defer src="/__/firebase/init.js?useEmulator=true"></script>
     </head>
     <body>
-        <h2>Welcome</h2>
-        <h1>Firebase Hosting Setup Complete</h1>
-        <p>You're seeing this because you've successfully setup FirebaseHosting.
-            Now it's time to go build something extraordinary!</p>
-        <p id="load">Firebase SDK Loading&hellip;</p>
+        <h1>Koaku.ma</h1>
+        <p>Koaku.maはシンプルなURL短縮サービスです。</p>
 
+        <p>&nbsp;</p>
+
+        <input type="text" placeholder="Input URL here" id="urlBox">
+        <input id="submit" type="button" value="短縮実行" disabled>
+        <p class="notice" id="error" style="display: none;"></p>
+
+        <p>&nbsp;</p>
+
+        <input type="text" readonly id="result" placeholder="短縮結果がここに表示されます">
+
+        <script src="js/isValidURL.js"></script>
+        <script src="js/hashGenerator.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>
