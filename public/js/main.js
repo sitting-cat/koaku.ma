@@ -21,7 +21,7 @@ function jumpToWebsite() {
     const target = replaceDifferentCharacter(
         encodeURIComponent(urlobject.pathname.substring(1))
     );
-    if (target) {
+    if (target && isValidKey(target)) {
         const dbRef = app.database().ref();
         dbRef.child("short/" + target).once("value").then((snapshot) => {
             if (snapshot.exists()) {

@@ -7,3 +7,8 @@ function isValidURL(url) {
         '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return !!pattern.test(url);
 }
+
+function isValidKey(key){
+    const regex = /^[0-9a-zA-Z~\-]+$/;
+    return regex.test(key);
+}
