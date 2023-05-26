@@ -29,15 +29,15 @@ function jumpToWebsite() {
                 window.location.replace(snapshot.val());
             } else {
                 showError("転送先が見つかりませんでした");
-                document.body.style.visibility = "visible";
+                showContent();
             }
         }).catch((error) => {
             showError("転送中にエラーが発生しました");
-            document.body.style.visibility = "visible";
+            showContent();
             console.error(error);
         })
     } else {
-        document.body.style.visibility = "visible";
+        showContent();
     }
     document.getElementById("submit").addEventListener("click", startShorteningUrl, false);
     document.getElementById("submit").removeAttribute("disabled");
@@ -94,4 +94,8 @@ function showError(message) {
 function openShortUrl() {
     let target = document.getElementById("result").value;
     window.open(target);
+}
+
+function showContent() {
+    document.body.classList.remove("loading");
 }
