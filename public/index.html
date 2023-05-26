@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
         <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Source+Code+Pro">
+        <link rel="stylesheet" href="css/iota.css">
         <link rel="stylesheet" href="css/main.css">
 
         <!-- NOTE - update the version number as needed -->
@@ -31,9 +32,21 @@
         <p>&nbsp;</p>
 
         <input type="text" readonly id="result" placeholder="短縮結果がここに表示されます">
+        <span class="grid" style="--cols-xl: 2; --cols-lg: 2;">
+            <div>
+                <input type="button" id="copybtn" onclick="copyShortUrl();"
+                    disabled value="コピー" style="width: 100%;" />
+            </div>
+            <div>
+                <input type="button" id="openbtn" onclick="openShortUrl();"
+                    disabled value="開く" style="width: 100%;" />
+            </div>
+        </span>
+        <p class="notice" id="copied" style="display: none;">コピーしました</p>
 
         <script src="js/isValidURL.js"></script>
         <script src="js/hashGenerator.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/copy.js"></script>
     </body>
 </html>

@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showError("データベースエラー（使用できません）");
         console.error(e);
     } finally {
+        console.info("Finished start-up");
         setTimeout(function () { jumpToWebsite(); });
     }
 });
@@ -77,9 +78,16 @@ function outputResult(result) {
     document.getElementById("result").value = result;
     document.getElementById("submit").removeAttribute("disabled");
     document.getElementById("result").focus();
+    document.getElementById("copybtn").removeAttribute("disabled");
+    document.getElementById("openbtn").removeAttribute("disabled");
 }
 
 function showError(message) {
     document.getElementById("error").removeAttribute("style");
     document.getElementById("error").textContent = message;
+}
+
+function openShortUrl() {
+    let target = document.getElementById("result").value;
+    window.open(target);
 }
