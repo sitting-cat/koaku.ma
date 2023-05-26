@@ -29,15 +29,18 @@ function jumpToWebsite() {
                 window.location.replace(snapshot.val());
             } else {
                 showError("転送先が見つかりませんでした");
+                document.body.style.visibility = "visible";
             }
         }).catch((error) => {
             showError("転送中にエラーが発生しました");
+            document.body.style.visibility = "visible";
             console.error(error);
         })
+    } else {
+        document.body.style.visibility = "visible";
     }
     document.getElementById("submit").addEventListener("click", startShorteningUrl, false);
     document.getElementById("submit").removeAttribute("disabled");
-    document.body.style.visibility = "visible";
 }
 
 function startShorteningUrl() {
