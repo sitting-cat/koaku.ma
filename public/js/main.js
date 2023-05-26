@@ -37,6 +37,7 @@ function jumpToWebsite() {
     }
     document.getElementById("submit").addEventListener("click", startShorteningUrl, false);
     document.getElementById("submit").removeAttribute("disabled");
+    document.body.style.visibility = "visible";
 }
 
 function startShorteningUrl() {
