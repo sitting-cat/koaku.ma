@@ -97,5 +97,6 @@ function openShortUrl() {
 }
 
 function showContent() {
+    console.log("shown");
     document.body.classList.remove("loading");
 }
