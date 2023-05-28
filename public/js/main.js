@@ -26,6 +26,17 @@ function jumpToWebsite() {
         const dbRef = app.database().ref();
         dbRef.child("short/" + target).once("value").then((snapshot) => {
             if (snapshot.exists()) {
+                gtag("event", "purchase", {
+                    transaction_id: generateUuid(),
+                    value: 0,
+                    currency: "JPY",
+                    items: [
+                        {
+                            item_name: "Koaku.ma - Forwarding Service",
+                            item_variant: target,
+                        },
+                    ]
+                });
                 window.location.replace(snapshot.val());
             } else {
                 showError("転送先が見つかりませんでした");
