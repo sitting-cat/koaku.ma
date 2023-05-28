@@ -1,4 +1,5 @@
 let app
+const urlPrefix = "https://koaku.ma/";
 
 document.addEventListener('DOMContentLoaded', function () {
     try {
@@ -12,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         showError("データベースエラー（使用できません）");
         console.error(e);
     } finally {
-        console.info("Finished start-up");
         setTimeout(function () { jumpToWebsite(); });
     }
 });
@@ -50,7 +50,7 @@ function startShorteningUrl() {
         if (isValidURL(urlBoxElement.value)) {
             document.getElementById("submit").setAttribute("disabled", null);
             searchGoodHashAndOutputResult(urlBoxElement.value);
-            result = "https://koaku.ma/" + getUrlHash(urlBoxElement.value);
+            result = urlPrefix + getUrlHash(urlBoxElement.value);
             document.getElementById("result").value = result;
             document.getElementById("submit").removeAttribute("disabled");
             document.getElementById("result").focus();
@@ -70,7 +70,7 @@ function searchGoodHashAndOutputResult(url, retry = 0) {
             searchGoodHashAndOutputResult(url, retry + 1);
         } else {
             target.set(url)
-            outputResult("https://koaku.ma/" + hash);
+            outputResult(urlPrefix + hash);
         }
     }).catch((error) => {
         showError("短縮中にエラーが発生しました");
@@ -79,6 +79,17 @@ function searchGoodHashAndOutputResult(url, retry = 0) {
 }
 
 function outputResult(result) {
+    gtag("event", "purchase", {
+        transaction_id: generateUuid(),
+        value: 0,
+        currency: "JPY",
+        items: [
+            {
+                item_name: "Koaku.ma - shortened URL",
+                item_variant: result.replace(urlPrefix, ""),
+            },
+        ]
+    });
     document.getElementById("result").value = result;
     document.getElementById("submit").removeAttribute("disabled");
     document.getElementById("result").focus();
@@ -97,6 +108,5 @@ function openShortUrl() {
 }
 
 function showContent() {
-    console.log("shown");
     document.body.classList.remove("loading");
 }
