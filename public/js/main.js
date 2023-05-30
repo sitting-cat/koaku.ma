@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.getElementById("urlBox").addEventListener("focus", urlBoxFocused);
 
 function urlBoxFocused() {
-    sendAddCartEvent(koakumaItems[shorten]);
+    sendAddCartEvent(koakumaItems["shorten"]);
     document.getElementById("urlBox").removeEventListener("focus", urlBoxFocused);
 }
 
@@ -44,15 +44,15 @@ function jumpToWebsite() {
     const target = replaceDifferentCharacter(
         encodeURIComponent(urlobject.pathname.substring(1))
     );
-    if (target) { sendViewEvent(koakumaItems[forward]); }
+    if (target) { sendViewEvent(koakumaItems["forward"]); }
     if (target && isValidKey(target)) {
-        koakumaItems[forward][item_variant] = target;
-        sendAddCartEvent(koakumaItems[forward]);
+        koakumaItems["forward"][item_variant] = target;
+        sendAddCartEvent(koakumaItems["forward"]);
         const dbRef = app.database().ref();
         dbRef.child("short/" + target).once("value").then((snapshot) => {
-            sendStartPaymentEvent(koakumaItems[forward]);
+            sendStartPaymentEvent(koakumaItems["forward"]);
             if (snapshot.exists()) {
-                sendPurchaseEvent(koakumaItems[forward]);
+                sendPurchaseEvent(koakumaItems["forward"]);
                 window.location.replace(snapshot.val());
             } else {
                 showError("転送先が見つかりませんでした");
@@ -73,7 +73,7 @@ function jumpToWebsite() {
 function startShorteningUrl() {
     let urlBoxElement = document.getElementById("urlBox");
     let result = "";
-    sendStartPaymentEvent(koakumaItems[shorten]);
+    sendStartPaymentEvent(koakumaItems["shorten"]);
     if (urlBoxElement.value) {
         if (isValidURL(urlBoxElement.value)) {
             document.getElementById("submit").setAttribute("disabled", null);
@@ -104,7 +104,7 @@ function searchGoodHashAndOutputResult(url, retry = 0) {
 }
 
 function outputResult(result) {
-    sendPurchaseEvent(koakumaItems[shorten]);
+    sendPurchaseEvent(koakumaItems["shorten"]);
     document.getElementById("result").value = result;
     document.getElementById("submit").removeAttribute("disabled");
     document.getElementById("result").focus();
@@ -124,7 +124,7 @@ function openShortUrl() {
 
 function showContent() {
     document.body.classList.remove("loading");
-    sendViewEvent(koakumaItems[shorten]);
+    sendViewEvent(koakumaItems["shorten"]);
 }
 
 function sendViewEvent(item) {
