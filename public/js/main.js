@@ -46,7 +46,7 @@ function jumpToWebsite() {
     );
     if (target) { sendViewEvent(koakumaItems["forward"]); }
     if (target && isValidKey(target)) {
-        koakumaItems["forward"][item_variant] = target;
+        koakumaItems["forward"]["item_variant"] = target;
         sendAddCartEvent(koakumaItems["forward"]);
         const dbRef = app.database().ref();
         dbRef.child("short/" + target).once("value").then((snapshot) => {
