@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <base href="https://koaku.ma/">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Koaku.ma - 技術的仕様</title>
+
+        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Source+Code+Pro">
+        <link rel="stylesheet" href="css/iota.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <!-- NOTE - update the version number as needed -->
+        <script defer src="/__/firebase/9.22.0/firebase-app-compat.js"></script>
+        <script defer src="/__/firebase/9.22.0/firebase-database-compat.js"></script>
+        <script defer src="/__/firebase/9.22.0/firebase-app-check-compat.js"></script>
+        <!-- NOTE - initialize the SDK after all desired features are loaded, -->
+        <!-- set useEmulator to false to avoid connecting the SDK to running emulators. -->
+        <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+        <!-- Google tag (gtag.js) -->
+        <script async
+            src="https://www.googletagmanager.com/gtag/js?id=G-RJH18CPBD3"></script>
+        <script src="js/analytics.js"></script>
+    </head>
+    <body>
+        <h1>Koaku.ma - 技術的仕様</h1>
+        <p>Koaku.maはシンプルなURL短縮サービスです。</p>
+
+        <p>&nbsp;</p>
+
+        <p>「Koaku.ma」のキー（短縮URLの末尾部分）は、以下のような性質を持っています。</p>
+
+        <ol>
+            <li>原則、似たようなURLは似たようなキーになります<br><br>
+                "http://example.com/aaaaa"→"https://koaku.ma/10Q"<br>
+                "http://example.com/aaaab"→"https://koaku.ma/10R"
+            </li>
+            <br>
+            <li>URLを並び替えただけの場合、同じキーになります<br><br>
+                "http://example.com/abcde"→"https://koaku.ma/10-"<br>
+                "http://example.com/edcba"→"https://koaku.ma/10-"
+            </li>
+            <br>
+            <li>もし算出されたキーにURLが既に登録されている場合、キーは大きく変化します<br><br>
+                （"http://example.com/abcde"が登録済みの場合）<br>
+                "http://example.com/edcba"→"https://koaku.ma/hmf"
+            </li>
+            <br>
+            <li>すべての場合で、他のアルファベット等と紛らわしい以下のアルファベット・数字は登場しません<br><br>
+                数字：<span class="scp">0</span><br>
+                英字：<span class="scp">b c g I k l o p s u v w x y z Z</span>
+            </li>
+            <br>
+            <li>上記のアルファベット・数字を含む短縮URLは、想定される正しいURLに補正されます<br><br>
+                "https://koaku.ma/12b"（本来bは登場しない）<br>
+                →"https://koaku.ma/126"（自動補正）
+            </li>
+        </ol>
+
+        <p><a href="https://koaku.ma/" class="button">メインページに戻る</a></p>
+
+    </body>
+</html>

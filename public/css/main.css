@@ -2,6 +2,10 @@ input{
     font-family: "Source Code Pro", serif;
 }
 
+.scp{
+    font-family: "Source Code Pro", serif !important;
+}
+
 .loading{
     visibility: hidden;
 }
