@@ -9,3 +9,10 @@ input{
 .loading{
     visibility: hidden;
 }
+
+body{
+    background-image: url("../img/back_head.png"), url("../img/back_bottom_left.png");
+    background-position: top, left bottom;
+    background-repeat: repeat-x, no-repeat;
+    background-attachment: scroll, fixed;
+}
