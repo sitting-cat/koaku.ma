@@ -26,7 +26,7 @@ function num2str(num) {
 function replaceDifferentCharacter(str) {
     // TODO - Find a better way to implement
     return str
-        .replace(new RegExp("[0o]"), "O")
+        .replace(new RegExp("[Oo]"), "0")
         .replace(new RegExp("[Il]"), "1")
         .replace(new RegExp("[zZ]"), "2")
         .replace("b", "6")
