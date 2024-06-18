@@ -72,7 +72,6 @@ function jumpToWebsite() {
 
 function startShorteningUrl() {
     let urlBoxElement = document.getElementById("urlBox");
-    let result = "";
     sendStartPaymentEvent(koakumaItems["shorten"]);
     if (urlBoxElement.value) {
         if (isValidURL(urlBoxElement.value)) {
