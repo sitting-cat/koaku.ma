@@ -7,7 +7,7 @@ import {
 } from "@cloudflare/itty-router-openapi";
 import { shortenMapModel } from "models/shortenMapModel";
 
-export class OriginUriFetch extends OpenAPIRoute {
+export class ShortenKeyFetch extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
         tags: ["shortenKey"],
         summary: "Get a original url by shorten key",
