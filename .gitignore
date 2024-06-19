@@ -67,3 +67,4 @@ node_modules/
 
 # Private file
 private
+/cloudflare/go-koaku-ma/src/archive
