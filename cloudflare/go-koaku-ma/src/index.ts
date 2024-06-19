@@ -1,18 +1,14 @@
 import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
-import { TaskCreate } from "./endpoints/taskCreate";
-import { TaskDelete } from "./endpoints/taskDelete";
-import { TaskFetch } from "./endpoints/taskFetch";
-import { TaskList } from "./endpoints/taskList";
 
-import { ShortenKeyCreate } from "endpoints/shortenKeyCreate";
-import { OriginUriFetch } from "endpoints/originUriFetch";
+import { ShortenKeyCreate } from "controllers/shortenKeyCreate";
+import { OriginUriFetch } from "controllers/originUriFetch";
 
 export const router = OpenAPIRouter({
 	docs_url: "/",
 });
 
-router.post('/shortenkey', ShortenKeyCreate);
-router.get('shortenkey/:key', OriginUriFetch);
+router.post('/urlmap', ShortenKeyCreate);
+router.get('/urlmap/:key', OriginUriFetch);
 
 // 404 for everything else
 router.all("*", () =>
