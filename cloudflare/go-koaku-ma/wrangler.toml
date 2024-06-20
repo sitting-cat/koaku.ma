@@ -1,7 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "go-koaku-ma"
 main = "src/index.ts"
-compatibility_date = "2024-06-14"
+compatibility_date = "2024-06-10"
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure
@@ -67,9 +67,12 @@ compatibility_date = "2024-06-14"
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#kv-namespaces
+[[kv_namespaces]]
+binding = "KOAKUMA"
+id = "64a5b9d639df4ba4a53be38dcc26e0ec"
 # [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# binding = "testkv"
+# id = "3995bf9338cc4270a5df65b60c4be273"
 
 # Bind an mTLS certificate. Use to present a client certificate when communicating with another service.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#mtls-certificates
