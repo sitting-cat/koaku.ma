@@ -1,11 +1,15 @@
 import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
 
 import { ShortenKeyCreate } from "controllers/shortenKeyCreate";
-import { ShortenKeyFetch } from "controllers/ShortenKeyFetch";
+import { ShortenKeyFetch } from "controllers/shortenKeyFetch";
 
 export const router = OpenAPIRouter({
 	docs_url: "/",
 });
+
+export interface Env {
+	testkv: KVNamespace;
+}
 
 router.post('/urlmap', ShortenKeyCreate);
 router.get('/urlmap/:key', ShortenKeyFetch);

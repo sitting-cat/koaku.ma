@@ -29,15 +29,16 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         env: any,
         context: any,
         data: Record<string, any>
-    ) {
-        let originUrl = data.body.url;
+    ): Promise<Response> {
+        let originUrl: string = data.body.url;
+        let kv: KVNamespace = env.KOAKUMA;
         // Retrieve the validated request body
         if (!originUrl) {
             // Urlが空
             return Response.json({ success: false, error: "Missing url" }, { status: 400 });
         }
 
-        const model = new shortenMapModel(originUrl);
+        const model: shortenMapModel = new shortenMapModel(kv, originUrl);
         if (!model.isOriginalValid()) {
             // Urlが不正
             return Response.json({ success: false, error: "Invalid url" }, { status: 400 });
@@ -47,8 +48,8 @@ export class ShortenKeyCreate extends OpenAPIRoute {
             return Response.json({ success: false, error: "Target page not found" }, { status: 400 });
         }
 
-        let key = model.generateShortenKey();
-        if (!model.save()) {
+        let key: string = await model.generateShortenKey();
+        if (!(await model.save())) {
             // 保存に失敗
             return Response.json({ success: false, error: "Failed to save" }, { status: 500 });
         }

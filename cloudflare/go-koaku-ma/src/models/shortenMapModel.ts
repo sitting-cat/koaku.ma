@@ -1,8 +1,13 @@
+import { HashGenerator } from "../utils/hashGenerator";
+
 export class shortenMapModel {
+    kv: KVNamespace;
     originurl: string;
     shortenkey!: string;
+    hashGenerator = new HashGenerator();
 
-    constructor(url: string) {
+    constructor(kv: KVNamespace, url: string) {
+        this.kv = kv;
         this.originurl = url;
     }
 
@@ -10,11 +15,14 @@ export class shortenMapModel {
      * 短縮キーからモデルを生成する
      *
      * @param key
-     * @returns shortenMapModel
+     * @returns shortenMapModel|null
      */
-    static fetchShortenKey(key: string): shortenMapModel {
-        // STUB
-        let fetchedModel = new shortenMapModel("https://example.com");
+    static async fetchShortenKey(kv: KVNamespace, key: string): Promise<shortenMapModel | null> {
+        let fetched = await kv.get(key);
+        if (fetched == null) {
+            return null;
+        }
+        let fetchedModel = new shortenMapModel(kv, fetched);
         fetchedModel.shortenkey = key;
         return fetchedModel;
     }
@@ -45,14 +53,53 @@ export class shortenMapModel {
         return responses.status < 400 || 500 <= responses.status;
     }
 
+    private async getExistsKeyList(): Promise<Array<Array<string>>> {
+        let current = await this.kv.list();
+        let keys: Array<string> = current['keys'].map((item: any) => item.name);
+        let hashs: Array<string> = current['keys'].map((item: any) => item.metadata.largeHash);
+
+        while (current.list_complete == false) {
+            let cursor = current.cursor;
+            current = await this.kv.list({ cursor: cursor });
+            keys.push(...current['keys'].map((item: any) => item.name));
+            hashs.push(...current['keys'].map((item: any) => item.metadata.largehash));
+        }
+        return [keys, hashs];
+    }
+
+    private async getUrlHash(): Promise<string> {
+        let existsKeyList: Array<Array<string>> = await this.getExistsKeyList();
+        let hash = this.hashGenerator.getUrlHash(this.originurl);
+        let retryCount = 0;
+        let originHash = await this.hashGenerator.sha256(this.originurl);
+        console.log("=====================================")
+        while (existsKeyList[0].includes(hash)) {
+            let existKeyIndex = existsKeyList[0].indexOf(hash);
+            if (
+                originHash == existsKeyList[1][existKeyIndex]
+                && await this.kv.get(hash) == this.originurl
+            ) {
+                console.log(" <<< collision >>>")
+                break;
+            }
+            retryCount++;
+            hash = this.hashGenerator.getUrlHash(hash + "猫".repeat(retryCount));
+        }
+        console.log("Retry count: " + retryCount);
+        console.log("Hash: " + hash);
+        console.log("OriginUrl: " + this.originurl);
+        console.log("LargeHash: " + originHash);
+        console.log("=====================================")
+        return hash;
+    }
+
     /**
      * 短縮キーを生成する
      *
      * @returns string
      */
-    generateShortenKey(): string {
-        // STUB
-        let key = Math.random().toString(36).substring(7);
+    async generateShortenKey(): Promise<string> {
+        let key = await this.getUrlHash();
         this.shortenkey = key;
         return key;
     }
@@ -62,13 +109,19 @@ export class shortenMapModel {
      *
      * 短縮キー生成後に呼び出すこと
      *
+     * @param kv KVNamespace
      * @returns boolean
      */
-    save(): boolean {
+    async save(): Promise<boolean> {
         if (!this.shortenkey) {
             return false;
         }
-        // STUB
+        // originUrlのハッシュ値をlargeHashとして保存
+        await this.kv.put(this.shortenkey, this.originurl, {
+            metadata: {
+                largeHash: await this.hashGenerator.sha256(this.originurl)
+            }
+        });
         return true;
     }
 }
