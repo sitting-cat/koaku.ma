@@ -28,16 +28,11 @@ export class Health extends OpenAPIRoute {
         env: any,
         context: any,
         data: Record<string, any>
-    ): Promise<Response> {
+    ) {
         let res = Response.json({
             success: true,
             status: "ok",
         })
-        let ss = new SuperSetter();
-
-        let resjson = await ss.superSet(env.KOAKUMA);
-        res = Response.json(resjson);
-        // return Res.p(res, request.headers);
-        return res;
+        return Res.p(res, request.headers);
     }
 }
