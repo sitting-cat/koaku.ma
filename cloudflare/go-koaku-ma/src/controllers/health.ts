@@ -6,6 +6,8 @@ import {
 } from "@cloudflare/itty-router-openapi";
 import { ResponseCreator as Res } from "utils/responseCreator";
 
+import { SuperSetter } from "../utils/superSetter";
+
 export class Health extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
         tags: ["general"],
@@ -31,6 +33,11 @@ export class Health extends OpenAPIRoute {
             success: true,
             status: "ok",
         })
-        return Res.p(res, request.headers);
+        let ss = new SuperSetter();
+
+        let resjson = await ss.superSet(env.KOAKUMA);
+        res = Response.json(resjson);
+        // return Res.p(res, request.headers);
+        return res;
     }
 }
