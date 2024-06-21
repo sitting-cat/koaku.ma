@@ -26,8 +26,11 @@ export class Health extends OpenAPIRoute {
         context: any,
         data: Record<string, any>
     ): Promise<Response> {
-        return Response.json({
+        let res = Response.json({
             success: true,
-        });
+            status: "ok",
+        })
+        res.headers.set("Access-Control-Allow-Origin", "https://koaku.ma");
+        return res;
     }
 }

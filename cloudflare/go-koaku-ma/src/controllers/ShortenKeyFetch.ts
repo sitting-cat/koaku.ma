@@ -48,11 +48,13 @@ export class ShortenKeyFetch extends OpenAPIRoute {
             return Response.json({ success: false, error: "Not found" }, { status: 404 });
         }
 
-        return Response.json({
+        let res = Response.json({
             success: true,
             result: {
                 originUrl: model.originurl,
             },
         });
+        res.headers.set("Access-Control-Allow-Origin", "https://koaku.ma");
+        return res;
     }
 }
