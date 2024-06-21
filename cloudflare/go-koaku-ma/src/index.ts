@@ -6,15 +6,19 @@ import { Health } from "controllers/health";
 
 export const router = OpenAPIRouter({
 	docs_url: "/__/docs",
+	openapi_url: "/__/openapi",
+	redoc_url: "/__/redoc",
 });
 
 export interface Env {
 	testkv: KVNamespace;
 }
 
+// ここでの記述順がドキュメントでの表示順になる
+
 router.get('/health', Health);
-router.post('/urlmap', ShortenKeyCreate);
 router.get('/urlmap/:key', ShortenKeyFetch);
+router.post('/urlmap', ShortenKeyCreate);
 
 // 404 for everything else
 router.all("*", () =>
