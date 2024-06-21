@@ -4,7 +4,7 @@ import { ShortenKeyCreate } from "controllers/shortenKeyCreate";
 import { ShortenKeyFetch } from "controllers/shortenKeyFetch";
 
 export const router = OpenAPIRouter({
-	docs_url: "/",
+	docs_url: "/__/docs",
 });
 
 export interface Env {
