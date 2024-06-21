@@ -96,23 +96,27 @@ function startShorteningUrl() {
 
 function searchGoodHashAndOutputResult(url) {
     // https://go.api.koaku.ma/urlmap にPOSTリクエストを送信する
-    $.ajax({
-        url: "https://go.api.koaku.ma/urlmap",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ url: url }),
-        dataType: "json",
-        success: function (data) {
-            if (data.result.shortenKey) {
-                outputResult(urlPrefix + data.result.shortenKey);
-            } else {
-                showError("短縮URLの取得に失敗しました(E006)");
-            }
-        },
-        error: function (data) {
-            showError("短縮URLの取得に失敗しました(E007)");
-            console.error(data);
-        }
+    grecaptcha.ready(function () {
+        grecaptcha.execute('6LdU4_0pAAAAAKv5ReY5xNxPyuDt8kH4dq19qcDB', { action: 'submit' }).then(function (token) {
+            $.ajax({
+                url: "https://go.api.koaku.ma/urlmap",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ url: url, token: token }),
+                dataType: "json",
+                success: function (data) {
+                    if (data.result.shortenKey) {
+                        outputResult(urlPrefix + data.result.shortenKey);
+                    } else {
+                        showError("短縮URLの取得に失敗しました(E006)");
+                    }
+                },
+                error: function (data) {
+                    showError("短縮URLの取得に失敗しました(E007)");
+                    console.error(data);
+                }
+            });
+        });
     });
 }
 
