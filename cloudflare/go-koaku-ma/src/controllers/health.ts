@@ -2,6 +2,7 @@ import {
     Bool,
     OpenAPIRoute,
     OpenAPIRouteSchema,
+    Str,
 } from "@cloudflare/itty-router-openapi";
 
 export class Health extends OpenAPIRoute {
@@ -13,6 +14,7 @@ export class Health extends OpenAPIRoute {
                 description: "Returns a health check response",
                 schema: {
                     success: new Bool({ example: true }),
+                    status: new Str({ example: "ok" }),
                 },
             },
         },
