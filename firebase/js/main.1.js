@@ -46,9 +46,7 @@ function urlBoxFocused() {
 
 function jumpToWebsite() {
     const urlobject = new URL(window.location);
-    const target = replaceDifferentCharacter(
-        encodeURIComponent(urlobject.pathname.substring(1))
-    );
+    const target = encodeURIComponent(urlobject.pathname.substring(1));
     if (target) { sendViewEvent(koakumaItems["forward"]); }
     if (target && isValidKey(target)) {
         koakumaItems["forward"]["item_variant"] = target;
@@ -129,6 +127,7 @@ function outputResult(result) {
 
 function showError(message) {
     document.getElementById("error").removeAttribute("style");
+    document.body.classList.remove("loading");
     document.getElementById("error").textContent = message;
 }
 
