@@ -4,6 +4,7 @@ import {
     OpenAPIRouteSchema,
     Str,
 } from "@cloudflare/itty-router-openapi";
+import { ResponseCreator as Res } from "utils/responseCreator";
 
 export class Health extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
@@ -30,7 +31,6 @@ export class Health extends OpenAPIRoute {
             success: true,
             status: "ok",
         })
-        res.headers.set("Access-Control-Allow-Origin", "https://koaku.ma");
-        return res;
+        return Res.p(res, request.headers);
     }
 }

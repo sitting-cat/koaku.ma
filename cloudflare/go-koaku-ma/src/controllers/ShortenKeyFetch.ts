@@ -7,6 +7,7 @@ import {
 } from "@cloudflare/itty-router-openapi";
 import { shortenMapModel } from "models/shortenMapModel";
 import { HashGenerator } from "utils/hashGenerator";
+import { ResponseCreator as Res } from "utils/responseCreator";
 
 export class ShortenKeyFetch extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
@@ -39,13 +40,13 @@ export class ShortenKeyFetch extends OpenAPIRoute {
         let hashGenerator = new HashGenerator();
         if (!key) {
             // keyが空
-            return Response.json({ success: false, error: "Missing key" }, { status: 400 });
+            return Res.p(Response.json({ success: false, error: "Missing key" }, { status: 400 }), request.headers);
         }
         key = hashGenerator.replaceDifferentCharacter(key);
         const model: shortenMapModel | null = await shortenMapModel.fetchShortenKey(kv, key);
         if (model == null) {
             // keyが存在しない
-            return Response.json({ success: false, error: "Not found" }, { status: 404 });
+            return Res.p(Response.json({ success: false, error: "Not found" }, { status: 404 }), request.headers);
         }
 
         let res = Response.json({
@@ -54,7 +55,6 @@ export class ShortenKeyFetch extends OpenAPIRoute {
                 originUrl: model.originurl,
             },
         });
-        res.headers.set("Access-Control-Allow-Origin", "https://koaku.ma");
-        return res;
+        return Res.p(res, request.headers);
     }
 }

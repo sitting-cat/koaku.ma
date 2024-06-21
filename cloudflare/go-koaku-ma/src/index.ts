@@ -3,6 +3,7 @@ import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
 import { ShortenKeyCreate } from "controllers/shortenKeyCreate";
 import { ShortenKeyFetch } from "controllers/shortenKeyFetch";
 import { Health } from "controllers/health";
+import { HandleOptionMethod } from "controllers/handleOptionMethod";
 
 export const router = OpenAPIRouter({
 	docs_url: "/__/docs",
@@ -19,6 +20,9 @@ export interface Env {
 router.get('/health', Health);
 router.get('/urlmap/:key', ShortenKeyFetch);
 router.post('/urlmap', ShortenKeyCreate);
+
+router.options('*', HandleOptionMethod);
+router.head('*', HandleOptionMethod);
 
 // 404 for everything else
 router.all("*", () =>
