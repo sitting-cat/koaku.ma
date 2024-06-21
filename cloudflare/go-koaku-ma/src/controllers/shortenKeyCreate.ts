@@ -37,6 +37,10 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         let originUrl: string = data.body.url;
         let token: string = data.body.token;
 
+        if (Res.checkOrigin(request.headers) === false) {
+            return Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers);
+        }
+
         // reCaptchaのトークンを検証
         if (!token) {
             // tokenが空

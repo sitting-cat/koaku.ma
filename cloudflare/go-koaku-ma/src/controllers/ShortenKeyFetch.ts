@@ -38,6 +38,11 @@ export class ShortenKeyFetch extends OpenAPIRoute {
         let key: string = data.params.key;
         let kv: KVNamespace = env.KOAKUMA;
         let hashGenerator = new HashGenerator();
+
+        if (Res.checkOrigin(request.headers) === false) {
+            return Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers);
+        }
+
         if (!key) {
             // keyが空
             return Res.p(Response.json({ success: false, error: "Missing key" }, { status: 400 }), request.headers);
