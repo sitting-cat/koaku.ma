@@ -108,3 +108,8 @@ id = "2f7a26d1af0f44a29dbdf2061eb5ddb8"
 # [[vectorize]]
 # binding = "MY_INDEX"
 # index_name = "my-index"
+
+# Bind a Worker version ID.
+# Docs: https://developers.cloudflare.com/workers/runtime-apis/bindings/version-metadata/
+[version_metadata]
+binding = "CF_WORKER_VERSION"
