@@ -132,7 +132,7 @@ function outputResult(result) {
 function showError(message) {
     document.getElementById("error").removeAttribute("style");
     document.body.classList.remove("loading");
-    document.getElementById("error").textContent = message + "<br />バグ報告は<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSftIaztvpJwKYT8fXYedoOFetkySoh1Orn9qPQqkjMiYkVMAg/viewform\" target=\"_blank\">こちら</a>からお願いします。";
+    document.getElementById("error").textContent = message + "。バグ報告は最下部の「フィードバック」からお願いします。";
 }
 
 function openShortUrl() {
