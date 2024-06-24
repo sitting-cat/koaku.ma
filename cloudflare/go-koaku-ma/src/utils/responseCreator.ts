@@ -4,17 +4,25 @@ export class ResponseCreator {
     // 許可オリジンリスト
     allowOriginList = [
         null,
+        "http://127.0.0.1:8787",
         "https://koaku.ma",
         "https://www.koaku.ma",
         "https://koaku-ma.github.io",
     ];
+    reportOriginList = [
+        null,
+        "http://127.0.0.1:8787"
+    ]
     static p(response: Response, headers: Headers, env: any, req: Request): Response {
         let me = new ResponseCreator();
+        let logger = new Logger(env);
         if (!me.allowOriginList.includes(headers.get("Origin"))) {
-            let logger = new Logger(env);
             const errMsg = `Forbidden: ${headers.get("Origin")}`;
             logger.report(errMsg, req, ["utils/responseCreator.ts", "p", 40, 403]);
             return new Response("Forbidden", { status: 403 });
+        } else if (me.reportOriginList.includes(headers.get("Origin"))) {
+            const errMsg = `Origin check bypassed: ${headers.get("Origin")}`;
+            logger.report(errMsg, req, ["utils/responseCreator.ts", "p", 50, 403]);
         }
         response.headers.set("Access-Control-Allow-Origin", headers.get("Origin"));
         response.headers.set("Access-Control-Allow-Headers", headers.get("Access-Control-Request-Headers"));
