@@ -24,7 +24,7 @@ export class Logger {
             "serviceContext": {
                 "service": "go-koaku-ma",
                 "version": this.AppricationVersion,
-                "resourceType": "api"
+                "resourceType": "consumed_api"
             },
             "message": message,
             "context": {
