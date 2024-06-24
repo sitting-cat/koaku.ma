@@ -31,6 +31,6 @@ export class Health extends OpenAPIRoute {
             success: true,
             status: "ok",
         })
-        return Res.p(res, request.headers);
+        return Res.p(res, request.headers, env, request);
     }
 }

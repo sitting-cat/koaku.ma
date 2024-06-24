@@ -53,6 +53,26 @@ export class shortenMapModel {
         return responses.status < 400 || 500 <= responses.status;
     }
 
+    async isSafetyWebsite(env: any): Promise<boolean> {
+        const GCP_Web_Risk_Endpoint = "https://webrisk.googleapis.com";
+        const GCP_WR_PATH = "/v1/uris:search";
+        const GCP_WR_THREAT_TYPES_PARAM = "threatTypes=MALWARE&threatTypes=SOCIAL_ENGINEERING&threatTypes=UNWANTED_SOFTWARE&threatTypes=SOCIAL_ENGINEERING_EXTENDED_COVERAGE";
+        // 今のところロギングと共通のAPIキーを使う
+        const GCP_WR_API_KEY = env.LOGGING_API_KEY;
+
+        // URLエンコードしないとクエリが正しく送信されない
+        const target = encodeURIComponent(this.originurl);
+
+        let res = await fetch(GCP_Web_Risk_Endpoint + GCP_WR_PATH + "?" + GCP_WR_THREAT_TYPES_PARAM + "&uri=" + target + "&key=" + GCP_WR_API_KEY);
+        let json = await res.json();
+
+        // 空のjsonが返ってきた場合は安全とみなす
+        if (Object.keys(json).length === 0) {
+            return true;
+        }
+        return false;
+    }
+
     private async getExistsKeyList(): Promise<Array<Array<string>>> {
         let current = await this.kv.list();
         let keys: Array<string> = current['keys'].map((item: any) => item.name);
