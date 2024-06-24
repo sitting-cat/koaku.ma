@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@cloudflare/itty-router-openapi": "^1.0.1",
-		"@google-cloud/logging": "^11.1.0"
+		"axios": "^1.7.2"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240614.0",
