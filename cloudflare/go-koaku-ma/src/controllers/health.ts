@@ -6,8 +6,6 @@ import {
 } from "@cloudflare/itty-router-openapi";
 import { ResponseCreator as Res } from "utils/responseCreator";
 
-import { SuperSetter } from "../utils/superSetter";
-
 export class Health extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
         tags: ["general"],
