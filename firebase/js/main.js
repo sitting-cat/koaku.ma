@@ -62,12 +62,16 @@ function jumpToWebsite() {
                     sendPurchaseEvent(koakumaItems["forward"]);
                     window.location.replace(data.result.originUrl);
                 } else {
-                    showError("転送先が見つかりませんでした(E003)");
+                    showError("転送中にエラーが発生しました(E003)");
                     showContent();
                 }
             },
             error: function (data) {
-                showError("転送中にエラーが発生しました(E004)");
+                if (data.responseJSON.error == "Not Found") {
+                    showError("転送先が見つかりませんでした(E013)");
+                } else {
+                    showError("転送中にエラーが発生しました(E004)");
+                }
                 showContent();
                 console.error(data);
             }
