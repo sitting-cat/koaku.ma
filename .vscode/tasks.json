@@ -6,10 +6,21 @@
 			"detail": "Firebaseエミュレーターを起動します",
 			"type": "shell",
 			"command": "firebase emulators:start",
-			"group":{
+			"group": {
 				"kind": "build",
-				"isDefault": true
 			}
+		},
+		{
+			"label": "Cloudflare Worker Preview",
+			"detail": "Cloudflare Workerのローカルプレビューを起動します",
+			"type": "shell",
+			"command": "cd cloudflare/go-koaku-ma; npx wrangler dev",
+		},
+		{
+			"label": "Cloudflare Worker Deploy",
+			"detail": "Cloudflare Workerをデプロイします",
+			"type": "shell",
+			"command": "cd cloudflare/go-koaku-ma; npx wrangler deploy",
 		}
 	]
 }
