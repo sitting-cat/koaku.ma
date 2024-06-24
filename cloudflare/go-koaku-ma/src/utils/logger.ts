@@ -15,6 +15,7 @@ export class Logger {
     }
 
     report(message: string, req: Request, happen: Array<string | number>) {
+        console.log(message);
         const path = happen[0];
         const func = happen[1];
         const line = happen[2];
