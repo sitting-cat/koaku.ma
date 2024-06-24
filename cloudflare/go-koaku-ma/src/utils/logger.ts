@@ -1,3 +1,5 @@
+import { count } from "console";
+
 const axios = require('axios');
 
 export class Logger {
@@ -12,10 +14,11 @@ export class Logger {
         this.GCP_API_KEY = env.LOGGING_API_KEY;
     }
 
-    reportError(message: string, req: Request, happen: Array<string>) {
+    report(message: string, req: Request, happen: Array<string | number>) {
         const path = happen[0];
-        const line = happen[1];
-        const func = happen[2];
+        const func = happen[1];
+        const line = happen[2];
+        const code = happen[3];
         const args = {
             "serviceContext": {
                 "service": "go-koaku-ma",
@@ -29,14 +32,14 @@ export class Logger {
                     "url": req.url,
                     "userAgent": req.headers.get("User-Agent"),
                     "referrer": req.headers.get("Referer"),
-                    "responseStatusCode": 500,
+                    "responseStatusCode": code,
                     "remoteIp": req.headers.get("CF-Connecting-IP"),
                 },
                 // ユーザー名にはIPアドレスを入れる
                 "user": req.headers.get("CF-Connecting-IP"),
                 "reportLocation": {
                     "filePath": path,
-                    "lineNumber": line,
+                    "lineNumber": line, // 実際の行数じゃなくて発生箇所を区別できればOK
                     "functionName": func
                 },
             }
