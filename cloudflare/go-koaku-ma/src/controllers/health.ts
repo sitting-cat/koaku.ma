@@ -5,6 +5,7 @@ import {
     Str,
 } from "@cloudflare/itty-router-openapi";
 import { ResponseCreator as Res } from "utils/responseCreator";
+import { Logger } from "utils/logger";
 
 export class Health extends OpenAPIRoute {
     static schema: OpenAPIRouteSchema = {
@@ -30,7 +31,9 @@ export class Health extends OpenAPIRoute {
         let res = Response.json({
             success: true,
             status: "ok",
-        })
+        });
+        let logger = new Logger(env);
+        await logger.report("Health check", "Health check is successful", Logger.INFO, ["Health.ts", "handle", 30, 200]);
         return Res.p(res, request.headers, env, request);
     }
 }

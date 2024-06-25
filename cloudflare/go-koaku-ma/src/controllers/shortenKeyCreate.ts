@@ -39,9 +39,16 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         let token: string = data.body.token;
         let logger = new Logger(env);
 
+        const requestDataTitle = ["method", "url", "User-Agent", "Referer", "CF-Connecting-IP"];
+        const requestArray = [request.method, request.url, request.headers.get("User-Agent"), request.headers.get("Referer"), request.headers.get("CF-Connecting-IP")];
+        const datail: { [key: string]: string } = {};
+        requestDataTitle.forEach((key, index) => {
+            datail[key] = requestArray[index];
+        });
+
         if (Res.checkOrigin(request.headers) === false) {
             const errMsg = `Forbidden: ${request.headers.get("Origin")}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "checkOrigin", 40, 403]);
+            logger.report("Forbidden", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "checkOrigin", 40, 403], datail);
             return Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers, env, request);
         }
 
@@ -49,7 +56,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         if (!token) {
             // tokenが空
             const errMsg = "Missing token";
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 50, 400]);
+            logger.report("Missing token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 50, 400], datail);
             return Res.p(Response.json({ success: false, error: "Missing token" }, { status: 400 }), request.headers, env, request);
         }
 
@@ -62,10 +69,11 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         });
 
         let recaptchaResponseJson = await recaptchaResponse.json() as { success: boolean };
+        datail["recaptchaResponse"] = JSON.stringify(recaptchaResponseJson);
         if (!recaptchaResponseJson.success) {
             // reCaptchaの検証に失敗
             const errMsg = `Failed to verify token: ${JSON.stringify(recaptchaResponseJson)}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 70, 500]);
+            logger.report("Failed to verify token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 60, 500], datail);
             return Res.p(Response.json({ success: false, error: "Failed to verify token" }, { status: 500 }), request.headers, env, request);
         }
 
@@ -74,27 +82,27 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         if (!originUrl) {
             // Urlが空
             const errMsg = "Missing url";
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 80, 400]);
+            logger.report("Missing url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 70, 400], datail);
             return Res.p(Response.json({ success: false, error: "Missing url" }, { status: 400 }), request.headers, env, request);
         }
 
-        const model: shortenMapModel = new shortenMapModel(kv, originUrl);
+        const model: shortenMapModel = new shortenMapModel(kv, originUrl, env);
         if (!model.isOriginalValid()) {
             // Urlが不正
             const errMsg = `Invalid url: ${originUrl}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 90, 400]);
+            logger.report("Invalid url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 80, 400], datail);
             return Res.p(Response.json({ success: false, error: "Invalid url" }, { status: 400 }), request.headers, env, request);
         }
         if (!(await model.isOriginalExist())) {
             // Url先が存在しない
             const errMsg = `Target page not found: ${originUrl}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 100, 400]);
+            logger.report("Target page not found", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 90, 400], datail);
             return Res.p(Response.json({ success: false, error: "Target page not found" }, { status: 400 }), request.headers, env, request);
         }
         if (!(await model.isSafetyWebsite(env))) {
             // 危険なサイト
             const errMsg = `Unsafe website: ${originUrl}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 105, 400]);
+            logger.report("Unsafe website", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 100, 400], datail);
             return Res.p(Response.json({ success: false, error: "Unsafe website" }, { status: 400 }), request.headers, env, request);
         }
 
@@ -102,7 +110,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         if (!(await model.save())) {
             // 保存に失敗
             const errMsg = `Failed to save: ${key}`;
-            logger.report(errMsg, request, ["controllers/shortenKeyCreate.ts", "handle", 110, 500]);
+            logger.report("Failed to save", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 110, 500], datail);
             return Res.p(Response.json({ success: false, error: "Failed to save" }, { status: 500 }), request.headers, env, request);
         }
 
@@ -112,6 +120,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
                 shortenKey: key,
             },
         });
+        logger.report("Success", `Shorten key created: ${key}`, Logger.INFO, ["shortenKeyCreate.ts", "handle", 120, 200], datail);
         return Res.p(res, request.headers, env, request);
     }
 }

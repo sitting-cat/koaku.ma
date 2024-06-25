@@ -1,14 +1,17 @@
 import { HashGenerator } from "../utils/hashGenerator";
+import { Logger } from "utils/logger";
 
 export class shortenMapModel {
     kv: KVNamespace;
     originurl: string;
+    logger: Logger;
     shortenkey!: string;
     hashGenerator = new HashGenerator();
 
-    constructor(kv: KVNamespace, url: string) {
+    constructor(kv: KVNamespace, url: string, env: any) {
         this.kv = kv;
         this.originurl = url;
+        this.logger = new Logger(env);
     }
 
     /**
@@ -17,12 +20,12 @@ export class shortenMapModel {
      * @param key
      * @returns shortenMapModel|null
      */
-    static async fetchShortenKey(kv: KVNamespace, key: string): Promise<shortenMapModel | null> {
+    static async fetchShortenKey(kv: KVNamespace, key: string, env: any): Promise<shortenMapModel | null> {
         let fetched = await kv.get(key);
         if (fetched == null) {
             return null;
         }
-        let fetchedModel = new shortenMapModel(kv, fetched);
+        let fetchedModel = new shortenMapModel(kv, fetched, env);
         fetchedModel.shortenkey = key;
         return fetchedModel;
     }
@@ -92,24 +95,24 @@ export class shortenMapModel {
         let hash = this.hashGenerator.getUrlHash(this.originurl);
         let retryCount = 0;
         let originHash = await this.hashGenerator.sha256(this.originurl);
-        console.log("=====================================")
+        let detail = {};
         while (existsKeyList[0].includes(hash)) {
             let existKeyIndex = existsKeyList[0].indexOf(hash);
             if (
                 originHash == existsKeyList[1][existKeyIndex]
                 && await this.kv.get(hash) == this.originurl
             ) {
-                console.log(" <<< collision >>>")
+                detail["collision"] = "This originUrl is already shortened.";
                 break;
             }
             retryCount++;
             hash = this.hashGenerator.getUrlHash(hash + "猫".repeat(retryCount));
         }
-        console.log("Retry count: " + retryCount);
-        console.log("Hash: " + hash);
-        console.log("OriginUrl: " + this.originurl);
-        console.log("LargeHash: " + originHash);
-        console.log("=====================================")
+        detail["retryCount"] = retryCount;
+        detail["hash"] = hash;
+        detail["originUrl"] = this.originurl;
+        detail["originHash"] = originHash;
+        this.logger.report("Hash generated", "Hash generated", Logger.INFO, ["shortenMapModel.ts", "getUrlHash", 40, 200], detail);
         return hash;
     }
 
