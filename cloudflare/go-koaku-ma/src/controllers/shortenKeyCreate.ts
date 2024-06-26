@@ -98,8 +98,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         }
         if (!(await model.isOriginalExist())) {
             // Url先が存在しない
-            const errMsg = `Target page not found: ${originUrl}`;
-            await logger.report("Target page not found", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 90, 400], datail);
+            // NOTE - isOriginalExist()内でエラーを報告しているため、ここではエラーを報告しない
             return await Res.p(Response.json({ success: false, error: "Target page not found" }, { status: 400 }), request.headers, env, request);
         }
         if (!(await model.isSafetyWebsite(env))) {

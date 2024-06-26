@@ -52,11 +52,14 @@ export class shortenMapModel {
      */
     async isOriginalExist(): Promise<boolean> {
         let responses = await fetch(this.originurl).catch(async () => {
-            await this.logger.report("Failed to fetch", this.originurl, Logger.ERROR, ["shortenMapModel.ts", "isOriginalExist", 40, 404]);
+            await this.logger.report("Failed to fetch", this.originurl, Logger.ERROR, ["shortenMapModel.ts", "isOriginalExist", 40, 500]);
             console.log("Failed to fetch: " + this.originurl);
-            return { status: 404 };
+            return { status: 500 };
         });
         // 400番以上はfalse、それ以外はtrue
+        if (responses.status >= 400) {
+            await this.logger.report("Website existence check failed", this.originurl, Logger.ERROR, ["shortenMapModel.ts", "isOriginalExist", 40, 404], { "status": responses.status.toString() });
+        }
         console.log("Original Exist check response : " + responses.status);
         return responses.status < 400;
     }
