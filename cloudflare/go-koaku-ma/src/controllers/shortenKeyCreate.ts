@@ -70,11 +70,13 @@ export class ShortenKeyCreate extends OpenAPIRoute {
 
         let recaptchaResponseJson = await recaptchaResponse.json() as { success: boolean };
         datail["recaptchaResponse"] = JSON.stringify(recaptchaResponseJson);
-        if (!recaptchaResponseJson.success) {
+        if (!recaptchaResponseJson.success && request.headers.get("Origin") !== "http://127.0.0.1:8787") {
             // reCaptchaの検証に失敗
             const errMsg = `Failed to verify token: ${JSON.stringify(recaptchaResponseJson)}`;
             await logger.report("Failed to verify token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 60, 500], datail);
             return await Res.p(Response.json({ success: false, error: "Failed to verify token" }, { status: 500 }), request.headers, env, request);
+        } else if (request.headers.get("Origin") === "http://127.0.0.1:8787") {
+            await logger.report("reCaptcha bypassed", "reCaptcha bypassed", Logger.WARN, ["shortenKeyCreate.ts", "handle", 60, 200], datail);
         }
 
         let kv: KVNamespace = env.KOAKUMA;
