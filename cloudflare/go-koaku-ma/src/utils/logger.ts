@@ -29,15 +29,8 @@ export class Logger {
     }
 
     async report(title: string, message: string, level: number, happen: Array<string | number>, details: { [key: string]: string } = {}) {
-        // 総文字数は5000文字まで
-        let textLength = 0;
-
-        // タイトルが255文字以上の場合は切り捨て
         title = title.length > 255 ? title.slice(0, 255) : title;
-        textLength += title.length;
-        // メッセージが2048文字以上の場合は切り捨て
         message = message.length > 2048 ? message.slice(0, 2048) : message;
-        textLength += message.length;
 
         const happenArray = {};
         if (!happen) happen = [];
@@ -52,8 +45,8 @@ export class Logger {
         const detailsArray = Object.keys(details).map(key => {
             if (detailsCount >= 25) return;
             detailsCount++;
-            // keyは256文字まで、valueは1024文字まで
-            textLength += Math.min(key.length, 256) + Math.min(details[key].length, 1024);
+            if (!key) key = "Unknown";
+            if (!details[key]) details[key] = "N/A";
             return {
                 "name": key.length > 256 ? key.slice(0, 256) : key,
                 "value": details[key].length > 1024 ? details[key].slice(0, 1024) : details[key]
@@ -79,7 +72,8 @@ export class Logger {
             ]
         };
 
-        if (textLength > 5000) {
+        // 総文字数は5000文字まで
+        if (JSON.stringify(args).length > 5000) {
             args.embeds[0].fields = [
                 {
                     "name": "Error",
@@ -91,6 +85,24 @@ export class Logger {
             await this.GCPLogger.report(gcpmessage, happen);
         }
 
-        await axios.post(this.Discord_Webhook, args);
+        await axios.post(this.Discord_Webhook, args)
+            .then(async (response) => {
+                if (response.status !== 204 && response.status !== 200) {
+                    const errMsg = `Failed to send message to Discord: ${response.status}`;
+                    console.log(errMsg);
+                    await this.GCPLogger.report(errMsg, happen);
+                }
+                console.log(`[${this.Discord_Levels[level]}] ${title} - ${message}`);
+            })
+            .catch(async (error) => {
+                // エラーレスポンスを文字列に
+                const respData = JSON.stringify(error.response.data.embeds[0]);
+                const errMsg = `Failed to send message to Discord: ${error} - ${respData}`;
+                console.log(errMsg);
+                await this.GCPLogger.report(errMsg, happen);
+                await this.report(title, message, level, happen, details);
+            });
+
+        return true;
     }
 }

@@ -50,23 +50,23 @@ export class ShortenKeyFetch extends OpenAPIRoute {
 
         if (Res.checkOrigin(request.headers) === false) {
             const errMsg = `Forbidden: ${request.headers.get("Origin")}`;
-            logger.report("Forbidden", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "checkOrigin", 40, 403], datail);
-            return Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers, env, request);
+            await logger.report("Forbidden", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "checkOrigin", 40, 403], datail);
+            return await Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers, env, request);
         }
 
         if (!key) {
             // keyが空
             const errMsg = "Missing key";
-            logger.report("Missing key", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "handle", 50, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Missing key" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Missing key", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "handle", 50, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Missing key" }, { status: 400 }), request.headers, env, request);
         }
         key = hashGenerator.replaceDifferentCharacter(key);
         const model: shortenMapModel | null = await shortenMapModel.fetchShortenKey(kv, key, env);
         if (model == null) {
             // keyが存在しない
             const errMsg = `Not found: ${key}`;
-            logger.report("Not found", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "handle", 60, 404], datail);
-            return Res.p(Response.json({ success: false, error: "Not found" }, { status: 404 }), request.headers, env, request);
+            await logger.report("Not found", errMsg, Logger.ERROR, ["shortenKeyFetch.ts", "handle", 60, 404], datail);
+            return await Res.p(Response.json({ success: false, error: "Not found" }, { status: 404 }), request.headers, env, request);
         }
 
         let res = Response.json({
@@ -75,7 +75,7 @@ export class ShortenKeyFetch extends OpenAPIRoute {
                 originUrl: model.originurl,
             },
         });
-        logger.report("Shorten key fetch", `Fetch origin url by shorten key: ${key}`, Logger.INFO, ["shortenKeyFetch.ts", "handle", 70, 200], datail);
-        return Res.p(res, request.headers, env, request);
+        await logger.report("Shorten key fetch", `Fetch origin url by shorten key: ${key}`, Logger.INFO, ["shortenKeyFetch.ts", "handle", 70, 200], datail);
+        return await Res.p(res, request.headers, env, request);
     }
 }

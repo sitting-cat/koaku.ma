@@ -33,7 +33,7 @@ export class Health extends OpenAPIRoute {
             status: "ok",
         });
         let logger = new Logger(env);
-        await logger.report("Health check", "Health check is successful", Logger.INFO, ["Health.ts", "handle", 30, 200]);
-        return Res.p(res, request.headers, env, request);
+        // await logger.report("Health check", "Health check is successful", Logger.INFO, ["Health.ts", "handle", 30, 200]);
+        return await Res.p(res, request.headers, env, request);
     }
 }

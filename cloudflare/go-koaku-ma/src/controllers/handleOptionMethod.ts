@@ -13,6 +13,6 @@ export class HandleOptionMethod extends OpenAPIRoute {
         context: any,
         data: Record<string, any>
     ): Promise<Response> {
-        return Res.p(new Response(), request.headers, env, request);
+        return await Res.p(new Response(), request.headers, env, request);
     }
 }

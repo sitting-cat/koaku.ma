@@ -48,16 +48,16 @@ export class ShortenKeyCreate extends OpenAPIRoute {
 
         if (Res.checkOrigin(request.headers) === false) {
             const errMsg = `Forbidden: ${request.headers.get("Origin")}`;
-            logger.report("Forbidden", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "checkOrigin", 40, 403], datail);
-            return Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers, env, request);
+            await logger.report("Forbidden", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "checkOrigin", 40, 403], datail);
+            return await Res.p(Response.json({ success: false, error: "Forbidden" }, { status: 403 }), request.headers, env, request);
         }
 
         // reCaptchaのトークンを検証
         if (!token) {
             // tokenが空
             const errMsg = "Missing token";
-            logger.report("Missing token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 50, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Missing token" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Missing token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 50, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Missing token" }, { status: 400 }), request.headers, env, request);
         }
 
         let recaptchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
@@ -73,8 +73,8 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         if (!recaptchaResponseJson.success) {
             // reCaptchaの検証に失敗
             const errMsg = `Failed to verify token: ${JSON.stringify(recaptchaResponseJson)}`;
-            logger.report("Failed to verify token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 60, 500], datail);
-            return Res.p(Response.json({ success: false, error: "Failed to verify token" }, { status: 500 }), request.headers, env, request);
+            await logger.report("Failed to verify token", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 60, 500], datail);
+            return await Res.p(Response.json({ success: false, error: "Failed to verify token" }, { status: 500 }), request.headers, env, request);
         }
 
         let kv: KVNamespace = env.KOAKUMA;
@@ -82,37 +82,39 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         if (!originUrl) {
             // Urlが空
             const errMsg = "Missing url";
-            logger.report("Missing url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 70, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Missing url" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Missing url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 70, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Missing url" }, { status: 400 }), request.headers, env, request);
         }
+        datail["originUrl"] = originUrl;
 
         const model: shortenMapModel = new shortenMapModel(kv, originUrl, env);
         if (!model.isOriginalValid()) {
             // Urlが不正
             const errMsg = `Invalid url: ${originUrl}`;
-            logger.report("Invalid url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 80, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Invalid url" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Invalid url", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 80, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Invalid url" }, { status: 400 }), request.headers, env, request);
         }
         if (!(await model.isOriginalExist())) {
             // Url先が存在しない
             const errMsg = `Target page not found: ${originUrl}`;
-            logger.report("Target page not found", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 90, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Target page not found" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Target page not found", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 90, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Target page not found" }, { status: 400 }), request.headers, env, request);
         }
         if (!(await model.isSafetyWebsite(env))) {
             // 危険なサイト
             const errMsg = `Unsafe website: ${originUrl}`;
-            logger.report("Unsafe website", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 100, 400], datail);
-            return Res.p(Response.json({ success: false, error: "Unsafe website" }, { status: 400 }), request.headers, env, request);
+            await logger.report("Unsafe website", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 100, 400], datail);
+            return await Res.p(Response.json({ success: false, error: "Unsafe website" }, { status: 400 }), request.headers, env, request);
         }
 
         let key: string = await model.generateShortenKey();
         if (!(await model.save())) {
             // 保存に失敗
             const errMsg = `Failed to save: ${key}`;
-            logger.report("Failed to save", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 110, 500], datail);
-            return Res.p(Response.json({ success: false, error: "Failed to save" }, { status: 500 }), request.headers, env, request);
+            await logger.report("Failed to save", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 110, 500], datail);
+            return await Res.p(Response.json({ success: false, error: "Failed to save" }, { status: 500 }), request.headers, env, request);
         }
+        datail["shortenKey"] = key;
 
         let res = Response.json({
             success: true,
@@ -120,7 +122,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
                 shortenKey: key,
             },
         });
-        logger.report("Success", `Shorten key created: ${key}`, Logger.INFO, ["shortenKeyCreate.ts", "handle", 120, 200], datail);
-        return Res.p(res, request.headers, env, request);
+        await logger.report("Success", `Shorten key created`, Logger.INFO, ["shortenKeyCreate.ts", "handle", 120, 200], datail);
+        return await Res.p(res, request.headers, env, request);
     }
 }

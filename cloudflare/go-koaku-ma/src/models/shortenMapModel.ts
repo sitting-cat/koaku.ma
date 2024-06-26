@@ -51,7 +51,10 @@ export class shortenMapModel {
      * @returns Promise<boolean>
      */
     async isOriginalExist(): Promise<boolean> {
-        let responses = await fetch(this.originurl);
+        let responses = await fetch(this.originurl).catch(async () => {
+            await this.logger.report("Failed to fetch", this.originurl, Logger.ERROR, ["shortenMapModel.ts", "isOriginalExist", 40, 404]);
+            return { status: 404 };
+        });
         // 400番台はfalse、それ以外はtrue
         return responses.status < 400 || 500 <= responses.status;
     }
@@ -73,6 +76,8 @@ export class shortenMapModel {
         if (Object.keys(json).length === 0) {
             return true;
         }
+        const jsonStr = JSON.stringify(json);
+        await this.logger.report("Web Risk API", "Unsafe website detected.", Logger.WARN, ["shortenMapModel.ts", "isSafetyWebsite", 40, 200], { "json": jsonStr });
         return false;
     }
 
@@ -108,11 +113,17 @@ export class shortenMapModel {
             retryCount++;
             hash = this.hashGenerator.getUrlHash(hash + "猫".repeat(retryCount));
         }
+
         detail["retryCount"] = retryCount;
         detail["hash"] = hash;
         detail["originUrl"] = this.originurl;
         detail["originHash"] = originHash;
-        this.logger.report("Hash generated", "Hash generated", Logger.INFO, ["shortenMapModel.ts", "getUrlHash", 40, 200], detail);
+
+        if (detail.hasOwnProperty("collision")) {
+            await this.logger.report("Hash collision", "Hash collision detected", Logger.WARN, ["shortenMapModel.ts", "getUrlHash", 40, 200], detail);
+        } else if (retryCount > 0) {
+            await this.logger.report("Retry", "Retry to generate hash", Logger.WARN, ["shortenMapModel.ts", "getUrlHash", 40, 200], detail);
+        }
         return hash;
     }
 
