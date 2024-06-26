@@ -82,7 +82,7 @@ export class shortenMapModel {
             return true;
         }
         const jsonStr = JSON.stringify(json);
-        await this.logger.report("Web Risk API", "Unsafe website detected.", Logger.WARN, ["shortenMapModel.ts", "isSafetyWebsite", 40, 200], { "json": jsonStr });
+        await this.logger.report("Web Risk API", "Unsafe website detected.", Logger.WARN, ["shortenMapModel.ts", "isSafetyWebsite", 40, 200], { "Web Risk API Response": jsonStr, "originUrl": this.originurl });
         return false;
     }
 

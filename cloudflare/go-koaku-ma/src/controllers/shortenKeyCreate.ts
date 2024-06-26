@@ -103,8 +103,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
         }
         if (!(await model.isSafetyWebsite(env))) {
             // 危険なサイト
-            const errMsg = `Unsafe website: ${originUrl}`;
-            await logger.report("Unsafe website", errMsg, Logger.ERROR, ["shortenKeyCreate.ts", "handle", 100, 400], datail);
+            // NOTE - isSafetyWebsite()内でエラーを報告しているため、ここではエラーを報告しない
             return await Res.p(Response.json({ success: false, error: "Unsafe website" }, { status: 400 }), request.headers, env, request);
         }
 
