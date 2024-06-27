@@ -5,7 +5,7 @@
 			"label": "Firebase Emulator",
 			"detail": "Firebaseエミュレーターを起動します",
 			"type": "shell",
-			"command": "firebase emulators:start",
+			"command": "firebase serve --only hosting",
 			"group": {
 				"kind": "build",
 			}
@@ -15,6 +15,9 @@
 			"detail": "Cloudflare Workerのローカルプレビューを起動します",
 			"type": "shell",
 			"command": "cd cloudflare/go-koaku-ma; npx wrangler dev",
+			"group": {
+				"kind": "build",
+			}
 		},
 		{
 			"label": "Cloudflare Worker Deploy",
