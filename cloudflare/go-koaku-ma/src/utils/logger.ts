@@ -9,17 +9,20 @@ export class Logger {
     private readonly Discord_Green = 5763719;
     private readonly Discord_Yellow = 16705372;
     private readonly Discord_Red = 15548997;
+    private readonly Discord_Blue = 5793266;
     private readonly Icon_info = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Info_icon_002.svg/240px-Info_icon_002.svg.png";
     private readonly Icon_warn = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Warning-logo.png";
     private readonly Icon_error = "https://upload.wikimedia.org/wikipedia/commons/9/95/Error-Logo.png";
+    private readonly Icon_notice = "https://upload.wikimedia.org/wikipedia/commons/6/67/Green_Check_mark.jpg";
 
     public static readonly INFO = 0;
     public static readonly WARN = 1;
     public static readonly ERROR = 2;
+    public static readonly NOTICE = 3;
 
-    private readonly Discord_Colors = [this.Discord_Green, this.Discord_Yellow, this.Discord_Red];
-    private readonly Discord_Levels = ["INFO", "WARN", "ERROR"];
-    private readonly Discord_Icons = [this.Icon_info, this.Icon_warn, this.Icon_error];
+    private readonly Discord_Colors = [this.Discord_Green, this.Discord_Yellow, this.Discord_Red, this.Discord_Blue];
+    private readonly Discord_Levels = ["INFO", "WARN", "ERROR", "NOTICE"];
+    private readonly Discord_Icons = [this.Icon_info, this.Icon_warn, this.Icon_error, this.Icon_notice];
 
     constructor(env: any) {
         const { id: versionId, tag: versionTag } = env.CF_WORKER_VERSION;

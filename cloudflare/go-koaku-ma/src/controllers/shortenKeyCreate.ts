@@ -122,7 +122,7 @@ export class ShortenKeyCreate extends OpenAPIRoute {
                 shortenKey: key,
             },
         });
-        await logger.report("Success", `Shorten key created`, Logger.INFO, ["shortenKeyCreate.ts", "handle", 120, 200], datail);
+        await logger.report("Success", `Shorten key created`, Logger.NOTICE, ["shortenKeyCreate.ts", "handle", 120, 200], datail);
         return await Res.p(res, request.headers, env, request);
     }
 }
