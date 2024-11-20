@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.getElementById("urlBox").addEventListener("focus", urlBoxFocused);
+document.getElementById("openbtn").addEventListener("click", openShortUrl);
 
 function urlBoxFocused() {
     sendAddCartEvent(koakumaItems["shorten"]);
