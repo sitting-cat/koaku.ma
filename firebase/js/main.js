@@ -134,7 +134,7 @@ function outputResult(result) {
 }
 
 function showError(message) {
-    document.getElementById("error").removeAttribute("style");
+    document.getElementById("error").classList.remove("no-display");
     document.body.classList.remove("loading");
     document.getElementById("error").textContent = message + "。バグ報告は最下部の「フィードバック」からお願いします。";
 }
