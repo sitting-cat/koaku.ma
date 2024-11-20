@@ -16,3 +16,12 @@ body{
     background-repeat: repeat-x, no-repeat;
     background-attachment: scroll, fixed;
 }
+
+#buttons{
+    --cols-xl: 2;
+    --cols-lg: 2;
+}
+
+#buttons input{
+    width: 100%;
+}

@@ -8,7 +8,7 @@
     <title>Koaku.ma - 短縮URL</title>
 
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro">
+    <link rel="stylesheet" href="css/source_code_pro.css">
     <link rel="stylesheet" href="css/iota.css">
     <link rel="stylesheet" href="css/main.css">
 
@@ -37,15 +37,15 @@
     <p>&nbsp;</p>
 
     <input type="text" readonly id="result" placeholder="短縮結果がここに表示されます">
-    <span class="grid" style="--cols-xl: 2; --cols-lg: 2;">
+    <span id="buttons" class="grid">
         <div>
-            <input type="button" id="copybtn" onclick="copyShortUrl();" disabled value="コピー" style="width: 100%;" />
+            <input type="button" id="copybtn" onclick="copyShortUrl();" disabled value="コピー"/>
         </div>
         <div>
-            <input type="button" id="openbtn" onclick="openShortUrl();" disabled value="開く" style="width: 100%;" />
+            <input type="button" id="openbtn" onclick="openShortUrl();" disabled value="開く"/>
         </div>
     </span>
-    <p class="notice" id="copied" style="display: none;">コピーしました<br>よければ応援もお願いします --> <a href="https://ofuse.me/sittingcat">OFUSE</a></p>
+    <p class="notice" id="copied" style="display: none;">コピーしました<br>よければ応援もお願いします → <a href="https://ofuse.me/sittingcat">OFUSE</a></p>
 
     <p>&nbsp;</p>
 
