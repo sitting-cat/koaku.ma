@@ -26,6 +26,6 @@ body{
     width: 100%;
 }
 
-.no-display{
+.hidden{
     display: none;
 }

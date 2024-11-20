@@ -10,5 +10,5 @@ function copyShortUrl() {
     } catch (error) {
         console.error(error);
     }
-    document.getElementById("copied").classList.remove("no-display");
+    document.getElementById("copied").classList.remove("hidden");
 }
