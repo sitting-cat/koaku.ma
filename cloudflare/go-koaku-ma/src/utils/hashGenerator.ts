@@ -1,21 +1,41 @@
 export class HashGenerator {
+    hashLength: number = 4;
+
     /**
      * 22bitハッシュを生成する.
      *
-     * keyが必ず4ケタになるように、22ビットに制限する
-     * 何ビットならkeyが最大で何ケタになるかは、num2str(2**22)などで簡易的に確認できる
+     * ( Old : keyが必ず4ケタになるように、22ビットに制限する )
+     * keyが必ずhashLengthケタになるように、ビット数を調整する
+     * hashLengthはhash22呼び出しごとに1づつ加算する
      *
      * @param str string
      * @returns number
      */
     hash22(str: string): number {
         let hash = 0;
+        let bitSize = this.calculateHashBitSize(this.hashLength);
+        let maxHashLimit = (1 << bitSize) - 1;
 
         for (let i = 0; i < str.length; i++) {
-            hash = (hash + str.charCodeAt(i)) & 0x3fffff;
+            // (( 1 << bitSize) - 1) はビット数分の1を繰り返した二進数の値
+            // charCodeAt(i) は文字列のi番目の文字のUnicodeコードポイントを返す
+            // これらを足し合わせて、許容される最大の値で割った余りを取ることで、
+            // 許容範囲内の出力に収まるようにする
+            hash = (hash + str.charCodeAt(i)) & maxHashLimit;
         }
 
+        this.hashLength++;
         return hash;
+    }
+
+    /**
+     * ハッシュのビット数を計算する.
+     *
+     * @param hashLength number
+     * @returns number
+     */
+    calculateHashBitSize(hashLength: number): number {
+        return Math.ceil(Math.log2(47 ** hashLength)) - 1;
     }
 
     /**
