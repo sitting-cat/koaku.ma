@@ -116,7 +116,7 @@ export class shortenMapModel {
                 break;
             }
             retryCount++;
-            hash = this.hashGenerator.getUrlHash(hash + "猫".repeat(retryCount));
+            hash = this.hashGenerator.getUrlHash(hash);
         }
 
         detail["retryCount"] = retryCount;

@@ -1,27 +1,26 @@
+import { Logger } from "./logger";
+
 export class HashGenerator {
     hashLength: number = 4;
 
     /**
      * 22bitハッシュを生成する.
      *
-     * ( Old : keyが必ず4ケタになるように、22ビットに制限する )
-     * keyが必ずhashLengthケタになるように、ビット数を調整する
+     * ( Old : keyが必ず4ケタ以内になるように、22ビットに制限する )
+     * keyが必ずhashLengthケタ以内になるように、ビット数を制限する
+     *
      * hashLengthはhash22呼び出しごとに1づつ加算する
      *
      * @param str string
-     * @returns number
+     * @returns BigInt
      */
-    hash22(str: string): number {
-        let hash = 0;
-        let bitSize = this.calculateHashBitSize(this.hashLength);
-        let maxHashLimit = (1 << bitSize) - 1;
+    hash22(str: string): bigint {
+        let hash = BigInt(0);
+        let maxBitSize = this.calculateHashBitSize(this.hashLength);
+        let maxHashLimit = (BigInt(1) << BigInt(maxBitSize)) - BigInt(1);
 
         for (let i = 0; i < str.length; i++) {
-            // (( 1 << bitSize) - 1) はビット数分の1を繰り返した二進数の値
-            // charCodeAt(i) は文字列のi番目の文字のUnicodeコードポイントを返す
-            // これらを足し合わせて、許容される最大の値で割った余りを取ることで、
-            // 許容範囲内の出力に収まるようにする
-            hash = (hash + str.charCodeAt(i)) & maxHashLimit;
+            hash = (hash * BigInt(i * (this.hashLength - 3)) + BigInt(str.charCodeAt(i))) & maxHashLimit;
         }
 
         this.hashLength++;
@@ -52,16 +51,19 @@ export class HashGenerator {
         return Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2, '0')).join('');
     }
 
-    num2str(num: number): string {
+    num2str(num: bigint): string {
         const charset = "0123456789adefhijmnqrtABCDEFGHJKLMNPQRSTUVWXY~-";
         let str = "";
 
-        if (num == 0) return "0";
+        if (num == BigInt(0)) return "0";
 
-        while (num > 0) {
-            const digit = num % 47;
+        while (num > BigInt(0)) {
+            // digitは必ず0以上46以下になるためNumberでキャストして問題ない
+            const digit = Number(num % BigInt(47));
             str = charset[digit] + str;
-            num = Math.floor(num / 47);
+
+            // BigInt同士の割り算であるため、小数点以下は切り捨てられる
+            num = num / BigInt(47);
         }
 
         return str;

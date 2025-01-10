@@ -29,21 +29,6 @@
     <p>「Koaku.ma」のキー（短縮URLの末尾部分）は、以下のような性質を持っています。</p>
 
     <ol>
-        <li>原則、似たようなURLは似たようなキーになります<br><br>
-            "http://example.com/aaaaa"→"https://koaku.ma/10Q"<br>
-            "http://example.com/aaaab"→"https://koaku.ma/10R"
-        </li>
-        <br>
-        <li>URLを並び替えただけの場合、同じキーになります<br><br>
-            "http://example.com/abcde"→"https://koaku.ma/10-"<br>
-            "http://example.com/edcba"→"https://koaku.ma/10-"
-        </li>
-        <br>
-        <li>もし算出されたキーにURLが既に登録されている場合、キーは大きく変化します<br><br>
-            （"http://example.com/abcde"が登録済みの場合）<br>
-            "http://example.com/edcba"→"https://koaku.ma/hmf"
-        </li>
-        <br>
         <li>すべての場合で、他のアルファベット等と紛らわしい以下のアルファベットは登場しません<br><br>
             <span class="scp">b c g I k l o O p s u v w x y z Z</span>
         </li>
@@ -53,6 +38,8 @@
             →"https://koaku.ma/126"（自動補正）
         </li>
     </ol>
+
+    <p>そのため、手書きで短縮URL等を伝えた際に伝達ミスが起こりづらいです</p>
 
     <p><a href="https://koaku.ma/" class="button">メインページに戻る</a></p>
 
