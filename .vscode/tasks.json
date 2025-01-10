@@ -7,7 +7,7 @@
 			"type": "shell",
 			"command": "firebase serve --only hosting",
 			"group": {
-				"kind": "build",
+				"kind": "build"
 			}
 		},
 		{
@@ -16,7 +16,7 @@
 			"type": "shell",
 			"command": "cd cloudflare/go-koaku-ma; npx wrangler dev",
 			"group": {
-				"kind": "build",
+				"kind": "build"
 			}
 		},
 		{
@@ -24,6 +24,7 @@
 			"detail": "Cloudflare Workerをデプロイします",
 			"type": "shell",
 			"command": "cd cloudflare/go-koaku-ma; npx wrangler deploy",
+			"problemMatcher": []
 		}
 	]
 }
